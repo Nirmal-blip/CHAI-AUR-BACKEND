@@ -1,5 +1,5 @@
 import express from 'express';
-import cors from 'cors';
+import cors from 'cors';//important for frontend backend connection
 import cookieParser from 'cookie-parser';
 
 
