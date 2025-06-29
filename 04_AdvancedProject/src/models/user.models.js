@@ -78,6 +78,7 @@ userSchema.methods.isPasswordCorrect=  async function(Password){
 
 
 // Method to generate JWT token(fast hai to no need of async)
+
 userSchema.methods.generateAccessToken=function(){
   return jwt.sign(
         {userId:this._id,
