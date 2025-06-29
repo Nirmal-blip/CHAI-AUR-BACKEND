@@ -17,4 +17,14 @@ app.use(express.static('public')); // Serve static files from the 'public' direc
 app.use(cookieParser()); // Parse cookies from incoming requests
 
 
-export default app; // This is the main application file where the Express app is created.
+
+//routes import 
+
+import userRouter from "./routes/user.routes.js"
+
+//routes declaration
+app.use("/api/v1/users",userRouter) //http://localhost:8000/api/v1/users
+
+
+
+export  {app}; // This is the main application file where the Express app is created.
