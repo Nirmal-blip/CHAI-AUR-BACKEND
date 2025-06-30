@@ -1,12 +1,16 @@
 // const asyncHandler = (fn) => {}
 
 
-const asyncHandler = (requestHandler)=>{
-    return (req,res,next)=>{
-      Promise.resolve(requestHandler(req,res,next)).reject((err)=>next(err))
-    }
-}
- 
+  const asyncHandler = (requestHandler) => {
+    return async (req, res, next) => {
+      try {
+        await requestHandler(req, res, next);
+      } catch (error) {
+        next(error); // forward to Express error handler
+      }
+    };
+  };
+  
 
 export { asyncHandler}
 
