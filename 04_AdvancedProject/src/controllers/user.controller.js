@@ -26,25 +26,54 @@ const registerUser=asyncHandler(async(req,res)=>{
    throw new ApiError(400,`${field} is required`)
   }
   //already exist
-  const existedUser= User.find({
+  const existedUser= await User.findOne({
     $or:[{userName}, {email}]
   })
   if(existedUser){
     throw new ApiError(409,"User with userName or Email exists")
   }
 
-  //to check the images(multer provide krta hai yeh)
- const avatarLocalPath= req.files?.avatar[0]?.path;
- const coverImageLocalPath=req.files?.coverImage[0]?.path;
 
-if(!avatarLocalPath){
-    throw new ApiError(400,"Avatar image is required");
-}
+  // console.log(req.files)
+  //to check the images(multer provide krta hai yeh)
+
+  //will show the error
+
+//  const avatarLocalPath= req.files?.avatar[0]?.path;
+//  const coverImageLocalPath=req.files?.coverImage[0]?.path;  
+
+
+
+ //check avatar pkka gya cloudinary pe ya undefined to nahi hai kya
+ let avatarLocalPath = "";
+ let coverImageLocalPath = "";
+ 
+ // ✅ Avatar must be provided
+ if (
+   !req.files ||
+   !Array.isArray(req.files.avatar) ||
+   req.files.avatar.length === 0
+ ) {
+   throw new ApiError(400, "Avatar image is required");
+ } else {
+   avatarLocalPath = req.files.avatar[0].path;
+ }
+ 
+ // ✅ Cover image is optional
+ if (
+   req.files &&
+   Array.isArray(req.files.coverImage) &&
+   req.files.coverImage.length > 0
+ ) {
+   coverImageLocalPath = req.files.coverImage[0].path;
+ }
+ 
+
 
     //upload them to cloudinary(method from cloudinary,js)
     const avatar=await uploadOnCloudinary(avatarLocalPath);
     const coverImage=await uploadOnCloudinary(coverImageLocalPath);
-    //check avatar pkka gya cloudinary pe
+   
     if(!avatar){
         throw new ApiError(400,"Avatar Not Uploaded")
     }

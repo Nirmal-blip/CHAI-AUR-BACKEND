@@ -1,1 +1,1 @@
-export const DB_NAME="NIRMAL PLAYER"
+export const DB_NAME="nirmalPlayer"

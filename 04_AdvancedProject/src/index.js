@@ -13,6 +13,7 @@ import {app} from './app.js' // Import the Express app
 //+++ BEST APPROACH +++++
 import ConnectDB from './db/db.js'
 
+
 ConnectDB()
 .then(()=>{
     //if error comes here in connection in express app, it will be caught by the error handler
