@@ -3,6 +3,29 @@ import { ApiError } from "../utils/ApiError.js";
 import {User} from "../models/user.models.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
+
+
+const generateAccessAndRefreshTokens = async (userId)=>{
+  try{
+   const user=await User.findById(userId)
+   const accessToken=user.generateAccessToken()
+   const refreshToken=user.generateRefreshToken()
+
+   //to add the refresh token in our db field
+   user.refreshToken=refreshToken
+   await user.save({validateBeforeSave:false})//validation nahi krna kyunki password save nahi ho rha
+
+return {accessToken,refreshToken}
+
+  }
+  catch(error){
+    throw new ApiError(500,"Something went wrong while generating refresh and access token")
+  }
+}
+
+
+
+//register user code
 const registerUser=asyncHandler(async(req,res)=>{
           // steps to register
   //get user details from frontend(can be seen from db)
@@ -101,5 +124,49 @@ const registerUser=asyncHandler(async(req,res)=>{
     new ApiResponse(200,createdUser,"User registered successfully")
    )
 })
+
+//login user code
+const userLogin=asyncHandler(async(req,res)=>{
+  //req body -> data
+  //userName or email
+  //find the user
+  //password check
+  //access and refresh token
+  //send cookie
+
+  //taking email and username password from frontend
+  const {email,userName,password}=req.body
+//if username doesnt exist
+  if(!userName || !email){
+    throw new ApiError(400, "Username or email is required")
+  }
+
+//finding that is the user wxist in my user db
+const user=User.findOne({
+  $or:[{userName},{email}]//if they exist in my db
+})
+
+//we will say user doesnt exist
+if(!user){
+  throw new ApiError(404,"User doesnt exist")
+}
+
+//now to compare password we have made the bcrypt function compare password 
+const isPasswordValid = await user.isPassWordCorrect(password)
+
+if(!isPasswordValid){
+  throw new ApiError(401,"Password is Incorrect")
+}
+
+//now getting AccessTokenorRefreshToken
+
+const {accessToken,refreshToken}=await generateAccessAndRefreshTokens(user._id);
+
+//now giving tjis accessToken and refresh token to cookies
+
+
+
+})
+
 
 export  {registerUser};

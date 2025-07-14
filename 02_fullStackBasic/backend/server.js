@@ -1,12 +1,14 @@
 import express from 'express';
-
+import cors from 'cors';
 const app=express();
 const PORT=process.env.PORT||3000;
 app.get('/', (req, res) => {
     res.send('Server is running');
     });
 
-
+   
+app.use(cors());
+    
 //get alist of 5 jokes
 app.get('/api/jokes', (req, res) => {
     const jokes = [{

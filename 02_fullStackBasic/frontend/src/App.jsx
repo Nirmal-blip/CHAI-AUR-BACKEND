@@ -3,14 +3,20 @@ import axios from 'axios'
 function App() {
  
 const [jokes, setJokes] = useState([])
+//useEffect cant be async, so we use try-catch inside it
+useEffect( ()=>{
 
-useEffect(()=>{
-  axios.get('/api/jokes').then((response)=>{
+  //i am using IIFE
+ ;( async () => {
+  try{
+   const response= await axios.get('/api/jokes')
     setJokes(response.data)
-    console.log(response.data);
-  }).catch((error)=>{
-    console.error('Error fetching jokes:', error)
-  })
+   console.log(response.data);}
+
+  catch(error){
+    console.error("Error fetching jokes:", error);
+  }})()
+
 },[])
 
 
